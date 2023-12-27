@@ -5,7 +5,7 @@
  * @returns -The sliced text , with an ellipsis (...) appended if truncated
  */
 
-export function textSlicer(txt: string, max: number = 40) {
+export function textSlicer(txt: string, max: number = 50) {
   if (txt.length >= max) {
     return `${txt.slice(0, max)}...`;
   } else {
