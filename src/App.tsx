@@ -39,7 +39,7 @@ function App() {
         {renderProductList}
       </div>
       <Modal isOpen={isOpen} closeModal={closeModal} title="ADD NEW PRODUCT">
-        <div className="space-y-3">
+        <form className="space-y-3">
           {renderFormInputList}
           <div className="flex items-center space-x-3">
             <Button className="bg-indigo-700 hover:bg-indigo-800">
@@ -47,7 +47,7 @@ function App() {
             </Button>
             <Button className="bg-gray-400 hover:bg-gray-500">Cancel</Button>
           </div>
-        </div>
+        </form>
       </Modal>
     </main>
   );
