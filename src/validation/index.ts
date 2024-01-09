@@ -4,6 +4,7 @@ export const productValidation = (product: {
   description: string;
   imageURL: string;
   price: string;
+  colors: string[];
 }) => {
   //**Returns an object
   const errors: {
