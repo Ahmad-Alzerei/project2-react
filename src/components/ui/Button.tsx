@@ -5,6 +5,7 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   width?: "w-full" | "w-fit";
 }
+
 const Button = ({ children, className, width = "w-full", ...rest }: IProps) => {
   // console.log({ rest });
   return (

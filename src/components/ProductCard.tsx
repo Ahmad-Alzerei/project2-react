@@ -1,67 +1,90 @@
 import { IProduct } from "../interfaces";
-import { textSlicer } from "../utils/functions";
+import { numberWithCommas, txtSlicer } from "../utils/functions";
+import CircleColor from "./CircleColor";
 import Image from "./Image";
 import Button from "./ui/Button";
-import CircleColor from "./CircleColor";
 
 interface IProps {
   product: IProduct;
   setProductToEdit: (product: IProduct) => void;
   openEditModal: () => void;
-  setProductToEditIdx: (value: number) => void;
   idx: number;
+  setProductToEditIdx: (value: number) => void;
+  openConfirmModal: () => void;
 }
 
 const ProductCard = ({
   product,
   setProductToEdit,
   openEditModal,
-  setProductToEditIdx,
   idx,
+  setProductToEditIdx,
+  openConfirmModal,
 }: IProps) => {
   const { title, description, imageURL, price, colors, category } = product;
-  /*________RENDER________*/
 
+  /* ------- RENDER -------  */
   const renderProductColors = colors.map((color) => (
     <CircleColor key={color} color={color} />
   ));
-  /*-------HANDLER----------*/
 
+  /* ------- HANDLER -------  */
   const onEdit = () => {
     setProductToEdit(product);
     openEditModal();
     setProductToEditIdx(idx);
   };
 
+  const onRemove = () => {
+    setProductToEdit(product);
+    openConfirmModal();
+  };
+
   return (
-    <div className="max-w-sm md:max-w-lg mx-auto border rounded-md p-2 flex flex-col md:mx-0">
+    <div className="max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col space-y-3">
       <Image
         imageURL={imageURL}
-        alt={"product name"}
-        className="rounded-md mb-2 h-52 w-full lg:object-cover"
+        alt={"Product Name"}
+        className="rounded-md h-52 w-full lg:object-cover"
       />
-      <h3>{title}</h3>
-      <p>{textSlicer(description)}</p>
-      <div className="flex item-center flex-wrap space-x-1">
-        {renderProductColors}
+
+      <h3 className="text-lg font-semibold">{txtSlicer(title, 25)}</h3>
+      <p className="text-sm text-gray-500 break-words">
+        {txtSlicer(description)}
+      </p>
+
+      <div className="flex items-center flex-wrap space-x-1">
+        {!colors.length ? (
+          <p className="min-h-[20px]">Not available colors!</p>
+        ) : (
+          renderProductColors
+        )}
       </div>
+
       <div className="flex items-center justify-between">
-        <span className="text-indigo-700">${price}</span>
-        <Image
-          imageURL={category.imageURL}
-          alt={category.name}
-          className="w-10 h-10 rounded-full object-bottom "
-        />
+        <span className="text-lg text-indigo-600 font-semibold">
+          ${numberWithCommas(price)}
+        </span>
+        <div className="flex items-center space-x-2">
+          <span className="text-xs font-semibold">{category.name}</span>
+          <Image
+            imageURL={category.imageURL}
+            alt={category.name}
+            className="w-10 h-10 rounded-full object-bottom"
+          />
+        </div>
       </div>
-      <div className="flex justify-between space-x-2 items-center mt-5">
-        <Button className="bg-indigo-700" width="w-full" onClick={onEdit}>
+
+      <div className="flex items-center justify-between space-x-2">
+        <Button className="bg-indigo-700 hover:bg-indigo-800" onClick={onEdit}>
           Edit
         </Button>
-        <Button className="bg-red-700 " width="w-full">
-          Destroy
+        <Button className="bg-[#c2344d] hover:bg-red-800" onClick={onRemove}>
+          Remove
         </Button>
       </div>
     </div>
   );
 };
+
 export default ProductCard;

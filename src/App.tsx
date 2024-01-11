@@ -30,6 +30,7 @@ function App() {
   /*--------------*/
 
   /*STATES*/
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [products, setProducts] = useState<IProduct[]>(productList);
   const [product, setProduct] = useState<IProduct>(defaultProductObj);
   const [productToEditIdx, setProductToEditIdx] = useState<number>(0);
@@ -74,6 +75,19 @@ function App() {
       [name]: "",
     });
   };
+  const openConfirmModal = () => {
+    setIsOpenConfirmModal(true);
+  };
+  const closeConfirmModal = () => {
+    setIsOpenConfirmModal(false);
+  };
+  const removeProductHandler = () => {
+    const filtered = products.filter(
+      (product) => product.id != productToEdit.id
+    );
+    setProducts(filtered);
+    closeConfirmModal();
+  };
   const onChangeEditHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     setProductToEdit({
@@ -96,6 +110,7 @@ function App() {
       setProductToEdit={setProductToEdit}
       openEditModal={openEditModal}
       setProductToEditIdx={setProductToEditIdx}
+      openConfirmModal={openConfirmModal}
       idx={idx}
     />
   ));
@@ -125,6 +140,10 @@ function App() {
       color={color}
       onClick={() => {
         if (tempColors.includes(color)) {
+          setTempColors((prev) => prev.filter((item) => item != color));
+          return;
+        }
+        if (productToEdit.colors.includes(color)) {
           setTempColors((prev) => prev.filter((item) => item != color));
           return;
         }
@@ -219,6 +238,11 @@ function App() {
       ...prev,
     ]);
     const updatedProducts = [...products];
+    updatedProducts[productToEditIdx] = {
+      ...productToEdit,
+      colors: tempColors.concat(productToEdit.colors),
+    };
+    setProducts(updatedProducts);
     setProductToEdit(defaultProductObj);
     setTempColors([]);
     closeEditModal();
@@ -229,9 +253,15 @@ function App() {
 
   return (
     <main className="container mx-auto">
-      <Button className="bg-indigo-700 hover:bg-indigo-800" onClick={openModal}>
-        ADD
-      </Button>
+      <div className="min-w-full flex justify-center">
+        <Button
+          className="bg-indigo-700 w-44 mt-5 hover:bg-indigo-800"
+          onClick={openModal}
+        >
+          Build a Product
+        </Button>
+      </div>
+
       <div className="m-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 p-2 rounded-md">
         {renderProductList}
       </div>
@@ -296,12 +326,17 @@ function App() {
             "imageURL"
           )}
           {renderProductEditWithErrorMsg("price", "Product Price", "price")}
-          {/* <Select
-            selected={selectedCategory}
-            setSelected={setSelectedCategory}
-          /> */}
-          {/* <div className="flex items-center flex-wrap space-x-2">
-            {tempColors.map((color) => (
+          <Select
+            selected={productToEdit.category}
+            setSelected={(value) =>
+              setProductToEdit({ ...productToEdit, category: value })
+            }
+          />
+          <div className="flex items-center space-x-2">
+            {renderProductColors}
+          </div>
+          <div className="flex items-center flex-wrap space-x-2">
+            {tempColors.concat(productToEdit.colors).map((color) => (
               <span
                 className="p-1 mr-1 mb-1 text-xs rounded-md text-white"
                 key={color}
@@ -312,11 +347,7 @@ function App() {
                 {color}
               </span>
             ))}
-          </div> */}
-          {/* 
-          <div className="flex items-center space-x-2">
-            {renderProductColors}
-          </div> */}
+          </div>
 
           <div className="flex items-center space-x-3">
             <Button className="bg-indigo-700 hover:bg-indigo-800">
@@ -330,6 +361,29 @@ function App() {
             </Button>
           </div>
         </form>
+      </Modal>
+      <Modal
+        isOpen={isOpenConfirmModal}
+        closeModal={closeConfirmModal}
+        title="Are you sure you want to remove this Product from your Store?"
+        description="Deleting this product will remove it permanently from your inventory. Any associated data,
+            sales history, and other related information will also be deleted. Please make sure this is the intended
+            action."
+      >
+        <div className="flex items-center space-x-3">
+          <Button
+            className="bg-[#c2344d] hover:bg-red-800"
+            onClick={removeProductHandler}
+          >
+            Yes, remove
+          </Button>
+          <Button
+            className="bg-[#f5f5fa] hover:bg-gray-300 text-black"
+            onClick={closeConfirmModal}
+          >
+            Cancel
+          </Button>
+        </div>
       </Modal>
     </main>
   );
