@@ -11,6 +11,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import CircleColor from "./components/CircleColor";
 import { v4 as uuid } from "uuid";
 import Select from "./components/ui/Select";
+import toast, { Toaster } from "react-hot-toast";
 import { ProductNameTypes } from "./types";
 /*The end of import place */
 
@@ -87,6 +88,7 @@ function App() {
     );
     setProducts(filtered);
     closeConfirmModal();
+    toast("Product has been deleted", { icon: "✅" });
   };
   const onChangeEditHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
@@ -378,13 +380,14 @@ function App() {
             Yes, remove
           </Button>
           <Button
-            className="bg-[#f5f5fa] hover:bg-gray-300 text-black"
+            className="bg-[#373738] hover:bg-gray-800 text-black"
             onClick={closeConfirmModal}
           >
             Cancel
           </Button>
         </div>
       </Modal>
+      <Toaster />
     </main>
   );
 }
