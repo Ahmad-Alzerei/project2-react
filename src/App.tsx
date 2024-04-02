@@ -2,7 +2,7 @@
 import ProductCard from "./components/ProductCard";
 import Modal from "./components/ui/Modal";
 import { formInputsList, productList, colors, categories } from "./data";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import { IProduct } from "./interfaces";
@@ -62,9 +62,10 @@ function App() {
     setIsOpenEditModal(false);
   }
 
-  function openEditModal() {
+  const openEditModal = useCallback(() => {
     setIsOpenEditModal(true);
-  }
+  }, []);
+
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     setProduct({
@@ -76,9 +77,9 @@ function App() {
       [name]: "",
     });
   };
-  const openConfirmModal = () => {
+  const openConfirmModal = useCallback(() => {
     setIsOpenConfirmModal(true);
-  };
+  }, []);
   const closeConfirmModal = () => {
     setIsOpenConfirmModal(false);
   };
